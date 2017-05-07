@@ -13,12 +13,16 @@ namespace RabbitMqTour
     {
         static void Main(string[] args)
         {
-            ConsumerSimple1();
-            ProducerSimple1();
+            //ConsumerSimple1();
+            //ProducerSimple1();
+            ConsumerSimple2();
+            ProducerSimple2();
+
             Console.ReadLine();
             MqConnectionFactory.Dispose();
         }
 
+        #region Simple1
         public static void ProducerSimple1()
         {
 
@@ -64,6 +68,56 @@ namespace RabbitMqTour
                 }
             };
             channel.BasicConsume("TestQueue", false, consumer);
+        } 
+        #endregion
+
+        static void ProducerSimple2()
+        {
+
+            var conn = MqConnectionFactory.GetConn(new RabbitMqConfig());
+
+            using (var channel = conn.CreateModel())
+            {
+                channel.ExchangeDeclare("TestExchange", ExchangeType.Fanout, durable: true);
+                //channel.QueueDeclare("TestQueue", true, false, false, null);
+                var properties = channel.CreateBasicProperties();
+                properties.Persistent = true;
+                for (int i = 0; i < 20; i++)
+                {
+                    string message = $"你好，我是第{i.ToString()}条信息==Exchange";
+                    channel.BasicPublish("TestExchange", "TestQueue", properties, message.ToBytes());
+                }
+            }
+
+        }
+
+        static void ConsumerSimple2()
+        {
+            var conn = MqConnectionFactory.GetConn(new RabbitMqConfig());
+
+            var channel = conn.CreateModel();
+            channel.ExchangeDeclare("TestExchange", ExchangeType.Fanout, durable: true, autoDelete: false, arguments: null);
+            var queueName = channel.QueueDeclare().QueueName;
+            channel.QueueBind(queueName, "TestExchange", "", null);
+           // channel.QueueDeclare("TestQueue", true, false, false, null);
+            channel.BasicQos(0, 1, false);
+            var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += (model, ea) =>
+            {
+                var body = ea.Body;
+                Console.WriteLine($"接收到消息：{body.ToStr()}");
+                if (new Random().Next(0, 12) == 1)
+                {
+                    channel.BasicAck(ea.DeliveryTag, false);
+                    Console.WriteLine("!!!!!!!!!");
+                }
+                else
+                {
+                    channel.BasicNack(ea.DeliveryTag, false, true);
+                    Console.WriteLine("确认失败!");
+                }
+            };
+            channel.BasicConsume(queueName, false, consumer);
         }
     }
 }
