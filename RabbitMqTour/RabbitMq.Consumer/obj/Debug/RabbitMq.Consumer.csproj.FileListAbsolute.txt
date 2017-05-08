@@ -1,0 +1,11 @@
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\RabbitMq.Consumer.exe.config
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\RabbitMq.Consumer.exe
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\RabbitMq.Consumer.pdb
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\Common.dll
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\RabbitMQ.Client.dll
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\Newtonsoft.Json.dll
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\Common.pdb
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\RabbitMQ.Client.xml
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\bin\Debug\Newtonsoft.Json.xml
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\obj\Debug\RabbitMq.Consumer.exe
+F:\Code\CodeForPractice\RabbitMq\RabbitMqTour\RabbitMq.Consumer\obj\Debug\RabbitMq.Consumer.pdb

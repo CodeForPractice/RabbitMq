@@ -15,8 +15,10 @@ namespace RabbitMqTour
         {
             //ConsumerSimple1();
             //ProducerSimple1();
-            ConsumerSimple2();
-            ProducerSimple2();
+            //ConsumerSimple2();
+            //ProducerSimple2();
+
+            ProduceSimple3();
 
             Console.ReadLine();
             MqConnectionFactory.Dispose();
@@ -68,9 +70,10 @@ namespace RabbitMqTour
                 }
             };
             channel.BasicConsume("TestQueue", false, consumer);
-        } 
+        }
         #endregion
 
+        #region Simple2
         static void ProducerSimple2()
         {
 
@@ -99,7 +102,7 @@ namespace RabbitMqTour
             channel.ExchangeDeclare("TestExchange", ExchangeType.Fanout, durable: true, autoDelete: false, arguments: null);
             var queueName = channel.QueueDeclare().QueueName;
             channel.QueueBind(queueName, "TestExchange", "", null);
-           // channel.QueueDeclare("TestQueue", true, false, false, null);
+            // channel.QueueDeclare("TestQueue", true, false, false, null);
             channel.BasicQos(0, 1, false);
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
@@ -118,6 +121,29 @@ namespace RabbitMqTour
                 }
             };
             channel.BasicConsume(queueName, false, consumer);
+        }
+        #endregion
+
+        static void ProduceSimple3()
+        {
+            var conn = MqConnectionFactory.GetConn(new RabbitMqConfig());
+            using (var channel = conn.CreateModel())
+            {
+                channel.ExchangeDeclare("Direct_log", ExchangeType.Direct, durable: true);
+                channel.QueueDeclare("ColorQueue", durable: true, exclusive: false, autoDelete: true);
+                string[] routingkeys = new string[] { "black", "green", "red", "white", "blue" };
+                for (int i = 0; i < routingkeys.Length; i++)
+                {
+                    channel.QueueBind("ColorQueue", "Direct_log", routingkeys[i]);
+                }
+                for (int i = 0; i < 100; i++)
+                {
+                    string routeKey = routingkeys[(i + 1) % routingkeys.Length];
+                    string message = $"我是第{i.ToString()}条消息，routeKey：{routeKey}";
+                    channel.BasicPublish("Direct_log", routeKey, null, message.ToBytes());
+                    Console.WriteLine(message);
+                }
+            }
         }
     }
 }
